@@ -113,6 +113,8 @@ function App() {
         </p>
         <input type="submit" value="開始" disabled={isDisabled} />
       </form>
+      <hr />
+      <a href="https://github.com/ci7lus/tomitake">ソースコード</a>
     </div>
   )
 }
