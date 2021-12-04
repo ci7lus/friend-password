@@ -1,0 +1,8 @@
+input[type="text"] {
+  width: 100%;
+}
+
+.warn {
+  background-color: var(--background-alt);
+  padding: 0.1em 1rem 1rem;
+}
