@@ -113,6 +113,12 @@ function App() {
         </p>
         <input type="submit" value="開始" disabled={isDisabled} />
       </form>
+      <div>
+        <h2>視聴方法</h2>
+        <p>mpv (IINA)で視聴するか、ffmpegで保存することができます。</p>
+        <h3>ffmpegで保存する</h3>
+        <code>ffmpeg -i "配信URL" -c copy output.mkv</code>
+      </div>
       <hr />
       <a href="https://github.com/ci7lus/tomitake">ソースコード</a>
     </div>
