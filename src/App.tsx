@@ -14,6 +14,7 @@ function App() {
       setUrl(last)
     }
   }, [])
+  const [resp, setResp] = useState("")
 
   return (
     <div>
@@ -43,6 +44,7 @@ function App() {
         onSubmit={(e) => {
           e.preventDefault()
           setIsDisabled(true)
+          setResp("")
           try {
             localStorage.setItem("last", url)
           } catch {}
@@ -73,13 +75,15 @@ function App() {
                 body: readableStream,
                 signal: abort.signal,
               })
-                .then(() => {
+                .then((res) => {
                   setIsDisabled(false)
                   mediaStream.getTracks().forEach((track) => track.stop())
+                  res.text().then((text) => setResp(text))
                 })
                 .catch((e) => {
                   console.error(e)
                   setIsDisabled(false)
+                  setResp(e.toString())
                   mediaStream.getTracks().forEach((track) => track.stop())
                 })
               mediaStream.getTracks().forEach((track) =>
@@ -113,6 +117,14 @@ function App() {
         </p>
         <input type="submit" value="開始" disabled={isDisabled} />
       </form>
+      {resp && (
+        <div>
+          <h3>応答</h3>
+          <pre>
+            <code>{resp}</code>
+          </pre>
+        </div>
+      )}
       <div>
         <h2>視聴方法</h2>
         <p>mpv (IINA)で視聴するか、ffmpegで保存することができます。</p>
