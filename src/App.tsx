@@ -36,16 +36,16 @@ function App() {
       <h1>Tomitake</h1>
       {isStreamUploadDisabled && (
         <div className="warn">
-          <h3>必要な機能が利用できない可能性があります</h3>
+          <h3>Necessary functions may not be available.</h3>
           <div>
             <p>
-              Tomitakeを利用するには、<code>ReadableStream</code>が
-              <code>fetch</code>で送信できる必要があります。
+              To use Tomitake, <code>ReadableStream</code> must be able to be
+              sent by fetch.
             </p>
-            <h4>Chrome/Chromium Edgeの場合</h4>
+            <h4>For Chrome/Chromium Edge</h4>
             <p>
-              <code>chrome://flags</code>から
-              <code>Experimental Web Platfrom features</code>を有効化します。
+              Enable <code>Experimental Web Platfrom features</code> from{" "}
+              <code>chrome://flags</code>.
             </p>
             <img
               src="https://i.gyazo.com/d89af071fe52c9fa0275edfe9f3e5431.png"
@@ -161,12 +161,13 @@ function App() {
           required
         />
         <p>
+          Specify the host where{" "}
           <a href="https://github.com/nwtgck/piping-server">
             nwtgck/piping-server
-          </a>
-          が動いているホストと配信を行いたいパスを指定してください。
-          <a href="https://replit.com/@nwtgck/piping">replitでフォークする</a>
-          と簡単にセルフホストできます。
+          </a>{" "}
+          is running and the path where you want to serve it. It is easy to
+          self-host by{" "}
+          <a href="https://replit.com/@nwtgck/piping">forking with replit</a>.
         </p>
         <label htmlFor="encryptKey">Encryption key (32 bytes)</label>
         <input
@@ -192,13 +193,14 @@ function App() {
           required={0 < encryptKey.length}
         />
         <p>
-          ストリームをChacha20で暗号化することができます。空欄にすると暗号化せずに送信します。
+          You can encrypt the stream with Chacha20. If left blank, the stream
+          will be sent unencrypted.
         </p>
         <div className="buttons">
-          <input type="submit" value="開始" disabled={isDisabled} />
+          <input type="submit" value="Start" disabled={isDisabled} />
           <input
             type="button"
-            value="パス生成"
+            value="Generate a path"
             disabled={isDisabled}
             onClick={() => {
               const u = new URL(url)
@@ -208,7 +210,7 @@ function App() {
           />
           <input
             type="button"
-            value="EncryptKey生成"
+            value="Generate an encryption key"
             disabled={isDisabled}
             onClick={() => {
               const n = new Uint8Array(32)
@@ -218,7 +220,7 @@ function App() {
           />
           <input
             type="button"
-            value="Nonce生成"
+            value="Generate a nonce"
             disabled={isDisabled}
             onClick={() => {
               const n = new Uint8Array(12)
@@ -230,23 +232,27 @@ function App() {
       </form>
       {resp && (
         <div>
-          <h3>応答</h3>
+          <h3>Result</h3>
           <pre>
             <code>{resp}</code>
           </pre>
         </div>
       )}
       <div>
-        <h2>視聴方法</h2>
+        <h2>How to watch</h2>
         <p>
-          暗号化を行っていない場合は、直接mpv
-          (IINA)で視聴したり、ffmpegで保存することができます。
+          If you do not use encryption, you can directly watch mpv (IINA) or can
+          be saved in ffmpeg.
         </p>
-        <h3>ffmpegで保存する</h3>
-        <code>ffmpeg -i "配信URL" -c copy output.mkv</code>
+        <h3>Save with ffmpeg</h3>
+        <code>ffmpeg -i "your stream url" -c copy output.mkv</code>
+        <h3>Encryption</h3>
+        <a href="https://github.com/ci7lus/tomitake#Chacha20_decrypt">
+          Watching an encrypted stream in mpv
+        </a>
       </div>
       <hr />
-      <a href="https://github.com/ci7lus/tomitake">ソースコード</a>
+      <a href="https://github.com/ci7lus/tomitake">Source code</a>
     </div>
   )
 }
