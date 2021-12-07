@@ -20,13 +20,13 @@ const worker: Worker = self as any
 
 worker.onmessage = (event) => {
   const { readable, writable, key, nonce } = event.data as {
-    key: Uint8Array
-    nonce: Uint8Array
+    key: Uint8Array | null
+    nonce: Uint8Array | null
     readable: ReadableStream
     writable: WritableStream
   }
   const transformStream = new TransformStream({
-    transform: encodeFunction(new Chacha20(nonce, key)),
+    transform: encodeFunction(key && nonce ? new Chacha20(nonce, key) : null),
   })
   readable.pipeThrough(transformStream).pipeTo(writable)
 }

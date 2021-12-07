@@ -60,92 +60,99 @@ function App() {
           e.preventDefault()
           setIsDisabled(true)
           setResp("")
-          const keyInArr = base64ToUint8Array(encryptKey)
-          if (keyInArr.byteLength !== 32) {
-            throw new Error("key is not 32 bytes")
-          }
-          const nonceInArr = base64ToUint8Array(nonce)
-          if (nonceInArr.byteLength !== 12) {
-            throw new Error("nonce is not 12 bytes")
-          }
           try {
-            localStorage.setItem("last", url)
-            if (encryptKey) {
-              localStorage.setItem("key", encryptKey)
+            const keyInArr = encryptKey ? base64ToUint8Array(encryptKey) : null
+            if (keyInArr && keyInArr.byteLength !== 32) {
+              throw new Error("key is not 32 bytes")
             }
-            if (nonce) {
-              localStorage.setItem("nonce", nonce)
+            const nonceInArr = nonce ? base64ToUint8Array(nonce) : null
+            if (nonceInArr && nonceInArr.byteLength !== 12) {
+              throw new Error("nonce is not 12 bytes")
             }
-          } catch {}
-          navigator.mediaDevices
-            .getDisplayMedia({
-              video: {
-                frameRate: {
-                  ideal: 30,
-                },
-              },
-              audio: {
-                sampleRate: { ideal: 48000 },
-                channelCount: { ideal: 2 },
-                echoCancellation: false,
-                noiseSuppression: false,
-              },
-            })
-            .then((mediaStream) => {
-              const recorder = new MediaRecorder(mediaStream)
-              const readableStream = new ReadableStream({
-                start(ctrl) {
-                  recorder.ondataavailable = async (e) => {
-                    ctrl.enqueue(await e.data.arrayBuffer())
-                  }
-                  recorder.start(100)
-                },
-                cancel() {
-                  recorder.stop()
-                },
-              })
-              const transformStream = new TransformStream()
-
-              worker.postMessage(
-                {
-                  key: keyInArr,
-                  nonce: nonceInArr,
-                  readable: readableStream,
-                  writable: transformStream.writable,
-                },
-                [readableStream, transformStream.writable] as never[]
-              )
-
-              const abort = new AbortController()
-              fetch(url, {
-                method: "PUT",
-                body: transformStream.readable,
-                signal: abort.signal,
-              })
-                .then((res) => {
-                  setIsDisabled(false)
-                  mediaStream.getTracks().forEach((track) => track.stop())
-                  res.text().then((text) => setResp(text))
-                })
-                .catch((e) => {
-                  console.error(e)
-                  setIsDisabled(false)
-                  setResp(e.toString())
-                  mediaStream.getTracks().forEach((track) => track.stop())
-                })
-              mediaStream.getTracks().forEach((track) =>
-                track.addEventListener("ended", () => {
-                  abort.abort()
-                  setIsDisabled(false)
-                })
-              )
-            })
-            .catch((e) => {
-              setIsDisabled(false)
-              if (e instanceof Error) {
-                setResp(e.message)
+            try {
+              localStorage.setItem("last", url)
+              if (encryptKey) {
+                localStorage.setItem("key", encryptKey)
               }
-            })
+              if (nonce) {
+                localStorage.setItem("nonce", nonce)
+              }
+            } catch {}
+            navigator.mediaDevices
+              .getDisplayMedia({
+                video: {
+                  frameRate: {
+                    ideal: 30,
+                  },
+                },
+                audio: {
+                  sampleRate: { ideal: 48000 },
+                  channelCount: { ideal: 2 },
+                  echoCancellation: false,
+                  noiseSuppression: false,
+                },
+              })
+              .then((mediaStream) => {
+                const recorder = new MediaRecorder(mediaStream)
+                const readableStream = new ReadableStream({
+                  start(ctrl) {
+                    recorder.ondataavailable = async (e) => {
+                      ctrl.enqueue(await e.data.arrayBuffer())
+                    }
+                    recorder.start(100)
+                  },
+                  cancel() {
+                    recorder.stop()
+                  },
+                })
+                const transformStream = new TransformStream()
+
+                worker.postMessage(
+                  {
+                    key: keyInArr,
+                    nonce: nonceInArr,
+                    readable: readableStream,
+                    writable: transformStream.writable,
+                  },
+                  [readableStream, transformStream.writable] as never[]
+                )
+
+                const abort = new AbortController()
+                fetch(url, {
+                  method: "PUT",
+                  body: transformStream.readable,
+                  signal: abort.signal,
+                })
+                  .then((res) => {
+                    setIsDisabled(false)
+                    mediaStream.getTracks().forEach((track) => track.stop())
+                    res.text().then((text) => setResp(text))
+                  })
+                  .catch((e) => {
+                    console.error(e)
+                    setIsDisabled(false)
+                    setResp(e.toString())
+                    mediaStream.getTracks().forEach((track) => track.stop())
+                  })
+                mediaStream.getTracks().forEach((track) =>
+                  track.addEventListener("ended", () => {
+                    abort.abort()
+                    setIsDisabled(false)
+                  })
+                )
+              })
+              .catch((e) => {
+                setIsDisabled(false)
+                if (e instanceof Error) {
+                  setResp(e.message)
+                }
+              })
+          } catch (e) {
+            setIsDisabled(false)
+            if (e instanceof Error) {
+              setResp(e.message)
+            }
+          }
         }}
       >
         <label htmlFor="url">Piping URL</label>
