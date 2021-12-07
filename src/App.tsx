@@ -36,7 +36,7 @@ function App() {
       <h1>Tomitake</h1>
       {isStreamUploadDisabled && (
         <div className="warn">
-          <h3>Necessary functions may not be available.</h3>
+          <h3>Capture the flag!</h3>
           <div>
             <p>
               To use Tomitake, <code>ReadableStream</code> must be able to be
@@ -247,7 +247,7 @@ function App() {
         <h3>Save with ffmpeg</h3>
         <code>ffmpeg -i "your stream url" -c copy output.mkv</code>
         <h3>Encryption</h3>
-        <a href="https://github.com/ci7lus/tomitake#Chacha20_decrypt">
+        <a href="https://github.com/ci7lus/tomitake#chacha20-decrypt">
           Watching an encrypted stream in mpv
         </a>
       </div>

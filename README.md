@@ -18,7 +18,3 @@ python3 decrypt.py -k 'your encryption key in base64' -n 'your nonce in base64' 
 ## Original idea
 
 <https://github.com/nwtgck/piping-server-streaming-upload-htmls>
-
-```
-
-```
