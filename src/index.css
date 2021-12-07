@@ -1,5 +1,5 @@
 input[type="text"] {
-  width: 100%;
+  width: 90%;
 }
 
 .warn {
@@ -9,4 +9,9 @@ input[type="text"] {
 
 div {
   padding: 0 0 0.7rem;
+}
+.buttons {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }

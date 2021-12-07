@@ -286,6 +286,11 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
+"@types/uuid@^8.3.3":
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.3.tgz#c6a60686d953dbd1b1d45e66f4ecdbd5d471b4d0"
+  integrity sha512-0LbEEx1zxrYB3pgpd1M5lEhLcXjKJnYghvhTRgaBeUivLHMDM1TzF3IJ6hXU2+8uA4Xz+5BA63mtZo5DjVT8iA==
+
 "@vitejs/plugin-react@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react/-/plugin-react-1.1.0.tgz#8dc889a3b37d475c4c5196bfa9dd6052182d6a1e"
@@ -322,6 +327,13 @@ caniuse-lite@^1.0.30001280:
   version "1.0.30001284"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001284.tgz#d3653929ded898cd0c1f09a56fd8ca6952df4fca"
   integrity sha512-t28SKa7g6kiIQi6NHeOcKrOrGMzCRrXvlasPwWC26TH2QNdglgzQIRUuJ0cR3NeQPH+5jpuveeeSFDLm2zbkEw==
+
+chacha20-universal@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/chacha20-universal/-/chacha20-universal-1.0.4.tgz#e8a33a386500b1ce5361b811ec5e81f1797883f5"
+  integrity sha512-/IOxdWWNa7nRabfe7+oF+jVkGjlr2xUL4J8l/OvzZhj+c9RpMqoo3Dq+5nU1j/BflRV4BKnaQ4+4oH1yBpQG1Q==
+  dependencies:
+    nanoassert "^2.0.0"
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -564,6 +576,11 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
+nanoassert@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/nanoassert/-/nanoassert-2.0.0.tgz#a05f86de6c7a51618038a620f88878ed1e490c09"
+  integrity sha512-7vO7n28+aYO4J+8w96AzhmU8G+Y/xpPDJz/se19ICsqj/momRbb9mh9ZUtkoJ5X3nTnPdhEJyc0qnM6yAsHBaA==
+
 nanoid@^3.1.30:
   version "3.1.30"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
@@ -689,6 +706,11 @@ typescript@^4.3.2:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
   integrity sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 vite@^2.6.4:
   version "2.6.14"
