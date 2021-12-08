@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { v4 as uuid } from "uuid"
 import { isStreamUploadSupported, mediaStreamToReadableStream } from "./stream"
 import { base64ToUint8Array, uint8ArrayToBase64 } from "./utils"
+// eslint-disable-next-line import/no-unresolved
 import Worker from "./worker?worker"
 
 const worker = new Worker()

@@ -16,6 +16,7 @@ const encodeFunction =
     controller.enqueue(result)
   }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const worker: Worker = self as any
 
 worker.onmessage = (event) => {
