@@ -1,6 +1,6 @@
 # Tomitake
 
-[Experimental] Share screen with nwtgck/piping-server + ReadableStream + fetch + Stream encrypt(chacha20).
+[Experimental] Share screen with [nwtgck/piping-server](https://github.com/nwtgck/piping-server) + ReadableStream + fetch + Stream encrypt(chacha20).
 
 ## Try
 
