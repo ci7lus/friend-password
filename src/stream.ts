@@ -7,7 +7,7 @@ export const mediaStreamToReadableStream = (
   return new ReadableStream({
     start(ctrl) {
       recorder.ondataavailable = async (e) => {
-        ctrl.enqueue(new Uint8Array(await e.data.arrayBuffer()))
+        ctrl.enqueue(await e.data.arrayBuffer())
       }
       recorder.start(timeslice)
     },

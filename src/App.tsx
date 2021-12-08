@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { v4 as uuid } from "uuid"
-import { isStreamUploadSupported } from "./stream"
+import { isStreamUploadSupported, mediaStreamToReadableStream } from "./stream"
 import { base64ToUint8Array, uint8ArrayToBase64 } from "./utils"
 import Worker from "./worker?worker"
 
@@ -86,18 +86,10 @@ function App() {
                 },
               })
               .then((mediaStream) => {
-                const recorder = new MediaRecorder(mediaStream)
-                const readableStream = new ReadableStream({
-                  start(ctrl) {
-                    recorder.ondataavailable = async (e) => {
-                      ctrl.enqueue(await e.data.arrayBuffer())
-                    }
-                    recorder.start(100)
-                  },
-                  cancel() {
-                    recorder.stop()
-                  },
-                })
+                const readableStream = mediaStreamToReadableStream(
+                  mediaStream,
+                  100
+                )
                 const transformStream = new TransformStream()
 
                 worker.postMessage(
