@@ -68,9 +68,7 @@ function App() {
             }
             try {
               localStorage.setItem("last", url)
-              if (encryptKey) {
-                localStorage.setItem("key", encryptKey)
-              }
+              localStorage.setItem("key", encryptKey || "")
             } catch {}
             navigator.mediaDevices
               .getDisplayMedia({
