@@ -23,6 +23,10 @@ function App() {
     if (key !== null) {
       setEncryptKey(key)
     }
+    const nonce = localStorage.getItem("nonce")
+    if (nonce !== null) {
+      setNonce(nonce)
+    }
   }, [])
   const [resp, setResp] = useState("")
   const [encryptKey, setEncryptKey] = useState("")
@@ -69,6 +73,7 @@ function App() {
             try {
               localStorage.setItem("last", url)
               localStorage.setItem("key", encryptKey || "")
+              localStorage.setItem("nonce", nonce || "")
             } catch {}
             navigator.mediaDevices
               .getDisplayMedia({
