@@ -113,10 +113,8 @@ export const Stream: React.FC<{
               const watchUrl = new URL(location.href)
               watchUrl.searchParams.set("mode", "watch")
               watchUrl.searchParams.set("url", url)
-              if (key) {
+              if (key && nonce) {
                 watchUrl.searchParams.set("key", key)
-              }
-              if (nonce) {
                 watchUrl.searchParams.set("nonce", nonce)
               }
               setWatchUrl(watchUrl.href)
@@ -157,7 +155,7 @@ export const Stream: React.FC<{
         }}
       />
 
-      {false && ( // TODO: fix cond
+      {watchUrl && (
         <Box mt="xs">
           <Title order={3} mb="xs">
             Watch URL

@@ -1,6 +1,11 @@
 export const MODE = {
-  Stream: "Stream",
-  Watch: "Watch",
+  Stream: "stream",
+  Watch: "watch",
 } as const
 
 export type MODE_TYPE = typeof MODE.Stream | typeof MODE.Watch
+
+export const MODE_DISPLAY: Record<MODE_TYPE, string> = {
+  [MODE.Stream]: "Stream",
+  [MODE.Watch]: "Watch",
+}

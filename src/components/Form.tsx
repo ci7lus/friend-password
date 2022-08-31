@@ -76,6 +76,27 @@ export const Form: React.FC<{
     form.setValues({ url, key, nonce })
   }, [url, key, nonce])
 
+  useEffect(() => {
+    if (mode !== MODE.Watch) {
+      return
+    }
+    const currentUrl = new URL(location.href)
+    const url = currentUrl.searchParams.get("url")
+    const key = currentUrl.searchParams.get("key")
+    const nonce = currentUrl.searchParams.get("nonce")
+    if (url && key && nonce) {
+      setUrl(url)
+      form.setFieldValue("url", url)
+      if (key && nonce) {
+        setKey(key)
+        setNonce(nonce)
+        form.setValues({ url, key, nonce })
+      }
+      currentUrl.search = ""
+      history.replaceState(null, "", currentUrl.href)
+    }
+  }, [])
+
   return (
     <Box>
       <form

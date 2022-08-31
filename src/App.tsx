@@ -6,10 +6,10 @@ import {
   SegmentedControl,
   Title,
 } from "@mantine/core"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Stream } from "./components/Stream"
 import { Watch } from "./components/Watch"
-import { MODE, MODE_TYPE } from "./constants"
+import { MODE, MODE_DISPLAY, MODE_TYPE } from "./constants"
 import { useLocalLocalStorage } from "./use-local-local-storage"
 
 function App() {
@@ -18,6 +18,15 @@ function App() {
     defaultValue: MODE.Stream,
   })
   const [isModeLocked, setIsModeLocked] = useState(false)
+  useEffect(() => {
+    const url = new URL(location.href)
+    const mode = url.searchParams.get("mode")
+    if (mode) {
+      const modeDetermined =
+        mode?.toLowerCase() === MODE.Watch ? MODE.Watch : MODE.Stream
+      setMode(modeDetermined)
+    }
+  }, [])
 
   return (
     <Container>
@@ -28,14 +37,14 @@ function App() {
       <Center mb="md">
         <SegmentedControl
           value={mode}
-          onChange={(s) => setMode(s as keyof typeof MODE)}
+          onChange={(s) => setMode(s as MODE_TYPE)}
           data={[
             {
-              label: MODE.Stream,
+              label: MODE_DISPLAY[MODE.Stream],
               value: MODE.Stream,
             },
             {
-              label: MODE.Watch,
+              label: MODE_DISPLAY[MODE.Watch],
               value: MODE.Watch,
             },
           ]}
