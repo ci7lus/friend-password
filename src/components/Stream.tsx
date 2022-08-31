@@ -10,7 +10,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { MODE } from "../constants"
 import { isStreamUploadSupported, mediaStreamToReadableStream } from "../stream"
 import { base64ToUint8Array } from "../utils"
@@ -20,7 +20,9 @@ import { Form } from "./Form"
 
 const worker = new Worker()
 
-export const Stream = () => {
+export const Stream: React.FC<{
+  setIsModeLocked: React.Dispatch<React.SetStateAction<boolean>>
+}> = ({ setIsModeLocked }) => {
   const [isStreamStarted, setIsStreamStarted] = useState(false)
   const [isStreamUploadDisabled, setIsStreamUploadDisabled] = useState(false)
   useEffect(() => {
@@ -89,6 +91,8 @@ export const Stream = () => {
             })
             .then((mediaStream) => {
               setIsStreamStarted(true)
+              setIsModeLocked(true)
+
               const readableStream = mediaStreamToReadableStream(
                 mediaStream,
                 100
@@ -137,16 +141,15 @@ export const Stream = () => {
                 })
                 .finally(() => {
                   setIsStreamStarted(false)
+                  setIsModeLocked(false)
                 })
               mediaStream.getTracks().forEach((track) =>
                 track.addEventListener("ended", () => {
                   abort.abort()
-                  setIsStreamStarted(false)
                 })
               )
             })
             .catch((e) => {
-              setIsStreamStarted(false)
               if (e instanceof Error) {
                 setResp(e.message)
               }

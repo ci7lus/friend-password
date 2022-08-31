@@ -8,11 +8,11 @@ import {
   ActionIcon,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { useLocalStorage } from "@mantine/hooks"
 import { IconRotateClockwise, IconX } from "@tabler/icons"
 import { useEffect } from "react"
 import { v4 as uuid } from "uuid"
 import { MODE, MODE_TYPE } from "../constants"
+import { useLocalLocalStorage } from "../use-local-local-storage"
 import { base64ToUint8Array, uint8ArrayToBase64 } from "../utils"
 
 export const Form: React.FC<{
@@ -20,15 +20,15 @@ export const Form: React.FC<{
   isActionStarted: boolean
   onSubmitHandle: (_: { url: string; key: string; nonce: string }) => unknown
 }> = ({ mode, isActionStarted, onSubmitHandle }) => {
-  const [url, setUrl] = useLocalStorage({
+  const [url, setUrl] = useLocalLocalStorage<string>({
     key: "last",
     defaultValue: `https://ppng.io/${uuid()}`,
   })
-  const [key, setKey] = useLocalStorage({
+  const [key, setKey] = useLocalLocalStorage<string>({
     key: "key",
     defaultValue: "",
   })
-  const [nonce, setNonce] = useLocalStorage({
+  const [nonce, setNonce] = useLocalLocalStorage<string>({
     key: "nonce",
     defaultValue: "",
   })
@@ -202,7 +202,7 @@ export const Form: React.FC<{
           </Text>
         )}
 
-        <Group position="right" mt="xs">
+        <Group position="right" mt="md">
           <Button
             type="submit"
             size="md"

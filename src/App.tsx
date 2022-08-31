@@ -6,16 +6,18 @@ import {
   SegmentedControl,
   Title,
 } from "@mantine/core"
-import { useLocalStorage } from "@mantine/hooks"
+import { useState } from "react"
 import { Stream } from "./components/Stream"
 import { Watch } from "./components/Watch"
 import { MODE, MODE_TYPE } from "./constants"
+import { useLocalLocalStorage } from "./use-local-local-storage"
 
 function App() {
-  const [mode, setMode] = useLocalStorage<MODE_TYPE>({
+  const [mode, setMode] = useLocalLocalStorage<MODE_TYPE>({
     key: "mode",
     defaultValue: MODE.Stream,
   })
+  const [isModeLocked, setIsModeLocked] = useState(false)
 
   return (
     <Container>
@@ -37,10 +39,15 @@ function App() {
               value: MODE.Watch,
             },
           ]}
+          disabled={isModeLocked}
         />
       </Center>
 
-      {mode === MODE.Stream ? <Stream /> : <Watch />}
+      {mode === MODE.Stream ? (
+        <Stream setIsModeLocked={setIsModeLocked} />
+      ) : (
+        <Watch setIsModeLocked={setIsModeLocked} />
+      )}
 
       <Divider my="md" />
       <Anchor href="https://github.com/ci7lus/tomitake">Source code</Anchor>
