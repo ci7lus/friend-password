@@ -3,7 +3,9 @@ export const mediaStreamToReadableStream = (
   mediaStream: MediaStream,
   timeslice: number
 ) => {
-  const recorder = new MediaRecorder(mediaStream)
+  const recorder = new MediaRecorder(mediaStream, {
+    mimeType: "video/webm; codecs=vp9",
+  })
   return new ReadableStream({
     start(ctrl) {
       recorder.ondataavailable = async (e) => {
@@ -22,6 +24,8 @@ export const isStreamUploadSupported = async () => {
   const supportsStreamsInRequestObjects = !new Request("", {
     body: new ReadableStream(),
     method: "POST",
+    // @ts-expect-error duplex
+    duplex: "half",
   }).headers.has("Content-Type")
 
   if (!supportsStreamsInRequestObjects) {
@@ -31,6 +35,8 @@ export const isStreamUploadSupported = async () => {
   return await fetch("data:a/a;charset=utf-8,", {
     method: "POST",
     body: new ReadableStream(),
+    // @ts-expect-error duplex
+    duplex: "half",
   }).then(
     () => true,
     () => false
