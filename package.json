@@ -12,13 +12,18 @@
     "lint:eslint": "eslint '**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@mantine/core": "^5.2.4",
+    "@mantine/form": "^5.2.4",
+    "@mantine/hooks": "^5.2.4",
+    "@tabler/icons": "^1.91.0",
     "chacha20-universal": "^1.0.4",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@ci7lus/eslint-config": "^1.0.1",
+    "@ci7lus/eslint-config": "^1.1.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/uuid": "^8.3.3",
