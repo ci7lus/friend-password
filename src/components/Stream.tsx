@@ -5,7 +5,6 @@ import {
   Code,
   CopyButton,
   Group,
-  Image,
   Text,
   TextInput,
   Title,
@@ -45,21 +44,13 @@ export const Stream: React.FC<{
           mb="md"
         >
           <Text mb="xs">
-            To use Tomitake, <Code>ReadableStream</Code> must be able to be sent
-            by fetch.
+            To use this, <Code>ReadableStream</Code> must be able to be sent by
+            fetch.
           </Text>
-          <Title order={4} mb="xs">
+          <Title order={5} mb="xs">
             For Chrome/Chromium Edge
           </Title>
-          <Text mb="xs">
-            Enable <Code>Experimental Web Platfrom features</Code> from{" "}
-            <Code>chrome://flags</Code>.
-          </Text>
-          <Image
-            src="https://i.gyazo.com/d89af071fe52c9fa0275edfe9f3e5431.png"
-            alt="Image from Gyazo"
-            width="731"
-          />
+          <Text mb="xs">Please update browser version to 105 or higher.</Text>
         </Alert>
       )}
 
