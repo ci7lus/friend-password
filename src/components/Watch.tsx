@@ -1,6 +1,6 @@
 import { Box, Code, Title } from "@mantine/core"
 import { useRef, useState } from "react"
-import { MODE } from "../constants"
+import { CODEC, MODE } from "../constants"
 import { base64ToUint8Array } from "../utils"
 // eslint-disable-next-line import/no-unresolved
 import Worker from "../worker?worker"
@@ -61,9 +61,7 @@ export const Watch: React.FC<{
 
               const mediaSource = new MediaSource()
               mediaSource.addEventListener("sourceopen", async () => {
-                const sourceBuffer = mediaSource.addSourceBuffer(
-                  "video/webm; codecs=vp9"
-                )
+                const sourceBuffer = mediaSource.addSourceBuffer(CODEC)
                 const reader = decodeStream.readable.getReader()
                 try {
                   let chunk = await reader.read()
@@ -72,7 +70,9 @@ export const Watch: React.FC<{
                       sourceBuffer.appendBuffer(chunk.value)
                     } else {
                       reader.cancel()
-                      setResp("MediaSource is closed (codec is not supported?)")
+                      setResp(
+                        "MediaSource was closed unexpectedly (codec is not supported?)"
+                      )
                       break
                     }
                     chunk = await reader.read()
@@ -80,7 +80,9 @@ export const Watch: React.FC<{
                 } catch (error) {
                   console.error(error)
                 } finally {
-                  mediaSource.endOfStream()
+                  if (mediaSource.readyState === "open") {
+                    mediaSource.endOfStream()
+                  }
                   setIsStreamStarted(false)
                   setIsModeLocked(false)
                 }

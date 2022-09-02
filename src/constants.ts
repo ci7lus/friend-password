@@ -9,3 +9,5 @@ export const MODE_DISPLAY: Record<MODE_TYPE, string> = {
   [MODE.Stream]: "Stream",
   [MODE.Watch]: "Watch",
 }
+
+export const CODEC = "video/webm; codecs=vp9"
