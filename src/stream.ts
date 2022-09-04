@@ -1,9 +1,13 @@
+import { CODEC } from "./constants"
+
 // https://github.com/nwtgck/piping-server-streaming-upload-htmls/blob/a107dd1fb1bbee9991a9278b10d9eaf88b52c395/screen_share.html
 export const mediaStreamToReadableStream = (
   mediaStream: MediaStream,
   timeslice: number
 ) => {
-  const recorder = new MediaRecorder(mediaStream)
+  const recorder = new MediaRecorder(mediaStream, {
+    mimeType: CODEC,
+  })
   return new ReadableStream({
     start(ctrl) {
       recorder.ondataavailable = async (e) => {
@@ -22,6 +26,8 @@ export const isStreamUploadSupported = async () => {
   const supportsStreamsInRequestObjects = !new Request("", {
     body: new ReadableStream(),
     method: "POST",
+    // @ts-expect-error duplex
+    duplex: "half",
   }).headers.has("Content-Type")
 
   if (!supportsStreamsInRequestObjects) {
@@ -31,6 +37,8 @@ export const isStreamUploadSupported = async () => {
   return await fetch("data:a/a;charset=utf-8,", {
     method: "POST",
     body: new ReadableStream(),
+    // @ts-expect-error duplex
+    duplex: "half",
   }).then(
     () => true,
     () => false
