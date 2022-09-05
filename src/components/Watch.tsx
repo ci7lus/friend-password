@@ -75,7 +75,7 @@ export const Watch: React.FC<{
                     } else {
                       reader.cancel()
                       setResp(
-                        "MediaSource was closed unexpectedly (codec is not supported?)"
+                        "MediaSource was closed unexpectedly (Wrong key or nonce?/Codec not supported?)"
                       )
                       break
                     }
