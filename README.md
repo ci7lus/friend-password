@@ -1,10 +1,10 @@
-# Tomitake
+# friend-password
 
 \[PoC] Share screen with [nwtgck/piping-server](https://github.com/nwtgck/piping-server) + ReadableStream + fetch + Stream encrypt(chacha20).
 
 ## Try
 
-<https://tomitake.netlify.app>
+<https://friend-password.netlify.app>
 
 ## Decrypt in CLI
 

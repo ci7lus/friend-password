@@ -31,7 +31,7 @@ function App() {
   return (
     <Container>
       <Title order={1} mt="xl" mb="xs">
-        Tomitake
+        friend-password
       </Title>
 
       <Center mb="md">
@@ -59,7 +59,9 @@ function App() {
       )}
 
       <Divider my="md" />
-      <Anchor href="https://github.com/ci7lus/tomitake">Source code</Anchor>
+      <Anchor href="https://github.com/ci7lus/friend-password">
+        Source code
+      </Anchor>
     </Container>
   )
 }
