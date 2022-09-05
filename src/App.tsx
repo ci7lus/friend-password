@@ -2,7 +2,7 @@ import {
   Anchor,
   Center,
   Container,
-  Divider,
+  Footer,
   SegmentedControl,
   Title,
 } from "@mantine/core"
@@ -58,10 +58,14 @@ function App() {
         <Watch setIsModeLocked={setIsModeLocked} />
       )}
 
-      <Divider my="md" />
-      <Anchor href="https://github.com/ci7lus/friend-password">
-        Source code
-      </Anchor>
+      <Footer height="md" my="md" pt="sm">
+        <Center>
+          friend-password・
+          <Anchor href="https://github.com/ci7lus/friend-password">
+            Source code
+          </Anchor>
+        </Center>
+      </Footer>
     </Container>
   )
 }
