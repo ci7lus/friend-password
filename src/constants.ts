@@ -10,4 +10,4 @@ export const MODE_DISPLAY: Record<MODE_TYPE, string> = {
   [MODE.Watch]: "Watch",
 }
 
-export const CODEC = "video/webm; codecs=vp9"
+export const CODEC = `video/webm; codecs="vp9,opus"`
