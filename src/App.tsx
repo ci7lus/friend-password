@@ -27,6 +27,19 @@ function App() {
       setMode(modeDetermined)
     }
   }, [])
+  useEffect(() => {
+    if (!isModeLocked) {
+      return
+    }
+    const handleEvent = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = ""
+    }
+    window.addEventListener("beforeunload", handleEvent)
+    return () => {
+      window.removeEventListener("beforeunload", handleEvent)
+    }
+  }, [isModeLocked])
 
   return (
     <Container>
