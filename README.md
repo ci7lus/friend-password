@@ -6,9 +6,9 @@
 
 <https://tomitake.netlify.app>
 
-## Chacha20 decrypt
+## Decrypt in CLI
 
-### realtime decrypt
+### streaming decrypt
 
 Using [decrypt.py](./decrypt.py) to decrypt in a stream.
 
@@ -17,7 +17,7 @@ pip3 install requests pycryptodome
 python3 decrypt.py -k 'your encryption key in base64' -n 'your nonce in base64' <your stream url> | mpv -
 ```
 
-### static decrypt
+### decrypt after transferred
 
 Using [decrypt_s.py](./decrypt_s.py) to decrypt in a stream.
 
