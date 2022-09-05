@@ -2,6 +2,8 @@
 
 \[PoC] Share screen with [nwtgck/piping-server](https://github.com/nwtgck/piping-server) + ReadableStream + fetch + Stream encrypt(chacha20).
 
+[![Image from Gyazo](https://i.gyazo.com/1a301ef60cc4e2d08df136f817520a0a.png)](https://gyazo.com/1a301ef60cc4e2d08df136f817520a0a)
+
 ## Try
 
 <https://friend-password.netlify.app>
