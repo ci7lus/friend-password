@@ -21,7 +21,7 @@ export const Watch: React.FC<{
       <Form
         mode={MODE.Watch}
         isActionStarted={isStreamStarted}
-        onSubmitHandle={({ url, key, nonce }) => {
+        onSubmitHandle={async ({ url, key, nonce }) => {
           if (isStreamStarted) {
             abortRef.current?.abort()
             return
@@ -29,37 +29,41 @@ export const Watch: React.FC<{
           const keyInArr = key ? base64ToUint8Array(key) : undefined
           const nonceInArr = nonce ? base64ToUint8Array(nonce) : undefined
           setResp("")
-          setWatchUrl("")
 
           if (!keyInArr && !nonceInArr) {
             setWatchUrl(url)
             return
+          } else {
+            setWatchUrl("")
           }
 
-          const abort = new AbortController()
-          abortRef.current = abort
-          fetch(url, { signal: abort.signal })
-            .then((result) => {
-              if (!result.body) {
-                return
-              }
-              setIsModeLocked(true)
-              setIsStreamStarted(true)
+          setIsModeLocked(true)
+          setIsStreamStarted(true)
 
-              const decodeStream = new TransformStream()
+          try {
+            const abort = new AbortController()
+            abortRef.current = abort
+            const result = await fetch(url, { signal: abort.signal })
 
-              worker.postMessage(
-                {
-                  key: keyInArr,
-                  nonce: nonceInArr,
-                  readable: result.body,
-                  writable: decodeStream.writable,
-                },
-                // @ts-expect-error type broken
-                [result.body, decodeStream.writable]
-              )
+            if (!result.body) {
+              return
+            }
 
-              const mediaSource = new MediaSource()
+            const decodeStream = new TransformStream()
+
+            worker.postMessage(
+              {
+                key: keyInArr,
+                nonce: nonceInArr,
+                readable: result.body,
+                writable: decodeStream.writable,
+              },
+              // @ts-expect-error type broken
+              [result.body, decodeStream.writable]
+            )
+
+            const mediaSource = new MediaSource()
+            await new Promise<void>((resolve, reject) => {
               mediaSource.addEventListener("sourceopen", async () => {
                 const sourceBuffer = mediaSource.addSourceBuffer(CODEC)
                 const reader = decodeStream.readable.getReader()
@@ -78,22 +82,26 @@ export const Watch: React.FC<{
                     chunk = await reader.read()
                   }
                 } catch (error) {
-                  console.error(error)
+                  reject(error)
                 } finally {
                   if (mediaSource.readyState === "open") {
                     mediaSource.endOfStream()
                   }
-                  setIsStreamStarted(false)
-                  setIsModeLocked(false)
+                  resolve()
                 }
               })
               const source = URL.createObjectURL(mediaSource)
               setWatchUrl(source)
             })
-            .catch((e) => {
-              console.error(e)
-              setResp(e.toString())
-            })
+          } catch (error) {
+            console.error(error)
+            if (error instanceof Error) {
+              setResp(error.toString())
+            }
+          } finally {
+            setIsStreamStarted(false)
+            setIsModeLocked(false)
+          }
         }}
       />
 
