@@ -60,8 +60,14 @@ function App() {
 
       <Footer height="md" my="md" pt="sm">
         <Center>
-          friend-password・
-          <Anchor href="https://github.com/ci7lus/friend-password">
+          <Anchor href="https://friend-password.netlify.app/" target="_blank">
+            friend-password
+          </Anchor>
+          ・
+          <Anchor
+            href="https://github.com/ci7lus/friend-password"
+            target="_blank"
+          >
             Source code
           </Anchor>
         </Center>
