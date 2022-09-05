@@ -9,7 +9,11 @@ createRoot(document.getElementById("root")!).render(
     <MantineProvider
       withGlobalStyles
       withNormalizeCSS
-      theme={{ colorScheme: "dark", lineHeight: 2 }}
+      theme={{
+        colorScheme: "dark",
+        lineHeight: 2,
+        primaryColor: "pink",
+      }}
     >
       <App />
     </MantineProvider>
