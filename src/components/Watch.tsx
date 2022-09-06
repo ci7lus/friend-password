@@ -116,13 +116,16 @@ export const Watch: React.FC<{
                   sourceBuffer.mode = "sequence"
                   sourceBuffer.addEventListener("updateend", () => {
                     if (mediaSource.readyState === "open" && isClosed) {
-                      setTimeout(() => mediaSource.endOfStream(), 5000)
                       mediaSource.endOfStream()
                     }
                   })
                   await new Promise((resolve, reject) => {
-                    sourceBuffer.addEventListener("updateend", resolve)
-                    sourceBuffer.addEventListener("error", reject)
+                    sourceBuffer.addEventListener("updateend", resolve, {
+                      once: true,
+                    })
+                    sourceBuffer.addEventListener("error", reject, {
+                      once: true,
+                    })
                     sourceBuffer.appendBuffer(firstBuffer)
                   })
                 } catch (error) {
@@ -134,7 +137,16 @@ export const Watch: React.FC<{
                   let chunk = await reader.read()
                   while (!chunk.done) {
                     if (mediaSource.readyState === "open" && chunk.value) {
-                      sourceBuffer.appendBuffer(chunk.value)
+                      await new Promise((resolve, reject) => {
+                        sourceBuffer.addEventListener("updateend", resolve, {
+                          once: true,
+                        })
+                        sourceBuffer.addEventListener("error", reject, {
+                          once: true,
+                        })
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        sourceBuffer.appendBuffer(chunk.value!)
+                      })
                     } else {
                       reader.cancel()
                       setResp(
