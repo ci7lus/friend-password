@@ -1,4 +1,4 @@
-import { CODEC_WITH_SOUND } from "./constants"
+import { DEFAULT_CODEC } from "./constants"
 
 // https://github.com/nwtgck/piping-server-streaming-upload-htmls/blob/a107dd1fb1bbee9991a9278b10d9eaf88b52c395/screen_share.html
 export const mediaStreamToReadableStream = (
@@ -6,7 +6,7 @@ export const mediaStreamToReadableStream = (
   timeslice: number
 ) => {
   const recorder = new MediaRecorder(mediaStream, {
-    mimeType: CODEC_WITH_SOUND,
+    mimeType: DEFAULT_CODEC,
   })
   return new ReadableStream({
     start(ctrl) {

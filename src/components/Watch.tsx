@@ -1,6 +1,7 @@
 import { Box, Code, Title } from "@mantine/core"
+import { EbmlToJson } from "ebml-to-json"
 import { useRef, useState } from "react"
-import { CODEC_WITH_SOUND, CODEC_WITHOUT_SOUND, MODE } from "../constants"
+import { MODE, CODECS } from "../constants"
 import { base64ToUint8Array } from "../utils"
 // eslint-disable-next-line import/no-unresolved
 import Worker from "../worker?worker"
@@ -62,34 +63,78 @@ export const Watch: React.FC<{
               [result.body, decodeStream.writable]
             )
 
+            const reader = decodeStream.readable.getReader()
+            let firstBuffer = new Uint8Array()
+            let codecs: string
+            while (firstBuffer.length < 200) {
+              const chunk = await reader.read()
+              if (!chunk.value) {
+                break
+              }
+              const joinedChunk = new Uint8Array(
+                firstBuffer.length + chunk.value.length
+              )
+              joinedChunk.set(firstBuffer)
+              joinedChunk.set(chunk.value, firstBuffer.length)
+              if (joinedChunk.length < 200) {
+                continue
+              }
+              const metadata = new EbmlToJson(chunk.value)
+              const track = metadata.Segment?.Tracks?.slice(0).shift()
+              if (!track) {
+                // 200bytesあってTrackないのはデコード失敗してそう
+                setResp("EMBL not found(Wrong key or nonce?)")
+                return
+              }
+              codecs = track.TrackEntry.map(
+                (entry) => CODECS[entry.CodecID.value as keyof typeof CODECS]
+              )
+                .filter((s) => !!s)
+                .join(",")
+              console.info("Found codecs:", codecs)
+              firstBuffer = joinedChunk
+              if (
+                !codecs ||
+                !MediaSource.isTypeSupported(`video/webm; codecs="${codecs}"`)
+              ) {
+                setResp(
+                  `Codec is not supported(video/webm; codecs="${codecs}")`
+                )
+                return
+              }
+            }
+
             const mediaSource = new MediaSource()
             await new Promise<void>((resolve, reject) => {
               mediaSource.addEventListener("sourceopen", async () => {
-                let isFirst = true
-                let sourceBuffer: SourceBuffer | null = null
-                const reader = decodeStream.readable.getReader()
                 let isClosed = false
+                let sourceBuffer: SourceBuffer
+                try {
+                  sourceBuffer = mediaSource.addSourceBuffer(
+                    `video/webm; codecs="${codecs}"`
+                  )
+                  sourceBuffer.mode = "sequence"
+                  sourceBuffer.addEventListener("updateend", () => {
+                    if (mediaSource.readyState === "open" && isClosed) {
+                      setTimeout(() => mediaSource.endOfStream(), 5000)
+                      mediaSource.endOfStream()
+                    }
+                  })
+                  await new Promise((resolve, reject) => {
+                    sourceBuffer.addEventListener("updateend", resolve)
+                    sourceBuffer.addEventListener("error", reject)
+                    sourceBuffer.appendBuffer(firstBuffer)
+                  })
+                } catch (error) {
+                  reject(error)
+                  return
+                }
+
                 try {
                   let chunk = await reader.read()
                   while (!chunk.done) {
-                    if (mediaSource.readyState === "open") {
-                      if (isFirst) {
-                        const codec = new TextDecoder()
-                          .decode(chunk.value.slice(0, 130))
-                          .toLowerCase()
-                          .includes("opus")
-                          ? CODEC_WITH_SOUND
-                          : CODEC_WITHOUT_SOUND
-                        sourceBuffer = mediaSource.addSourceBuffer(codec)
-                        sourceBuffer.addEventListener("updateend", () => {
-                          if (mediaSource.readyState === "open" && isClosed) {
-                            setTimeout(() => mediaSource.endOfStream(), 5000)
-                            mediaSource.endOfStream()
-                          }
-                        })
-                        isFirst = false
-                      }
-                      sourceBuffer?.appendBuffer(chunk.value)
+                    if (mediaSource.readyState === "open" && chunk.value) {
+                      sourceBuffer.appendBuffer(chunk.value)
                     } else {
                       reader.cancel()
                       setResp(
@@ -106,7 +151,7 @@ export const Watch: React.FC<{
                     isClosed = true
                     if (
                       mediaSource.readyState === "open" &&
-                      !sourceBuffer?.updating
+                      !sourceBuffer.updating
                     ) {
                       mediaSource.endOfStream()
                     }
