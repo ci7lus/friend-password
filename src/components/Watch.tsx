@@ -1,6 +1,6 @@
 import { Box, Code, Title } from "@mantine/core"
 import { useRef, useState } from "react"
-import { CODEC, MODE } from "../constants"
+import { CODEC_WITH_SOUND, CODEC_WITHOUT_SOUND, MODE } from "../constants"
 import { base64ToUint8Array } from "../utils"
 // eslint-disable-next-line import/no-unresolved
 import Worker from "../worker?worker"
@@ -47,7 +47,7 @@ export const Watch: React.FC<{
               return
             }
 
-            const decodeStream = new TransformStream()
+            const decodeStream = new TransformStream<Uint8Array, Uint8Array>()
 
             const worker = new Worker()
 
@@ -65,13 +65,31 @@ export const Watch: React.FC<{
             const mediaSource = new MediaSource()
             await new Promise<void>((resolve, reject) => {
               mediaSource.addEventListener("sourceopen", async () => {
-                const sourceBuffer = mediaSource.addSourceBuffer(CODEC)
+                let isFirst = true
+                let sourceBuffer: SourceBuffer | null = null
                 const reader = decodeStream.readable.getReader()
+                let isClosed = false
                 try {
                   let chunk = await reader.read()
                   while (!chunk.done) {
                     if (mediaSource.readyState === "open") {
-                      sourceBuffer.appendBuffer(chunk.value)
+                      if (isFirst) {
+                        const codec = new TextDecoder()
+                          .decode(chunk.value.slice(0, 130))
+                          .toLowerCase()
+                          .includes("opus")
+                          ? CODEC_WITH_SOUND
+                          : CODEC_WITHOUT_SOUND
+                        sourceBuffer = mediaSource.addSourceBuffer(codec)
+                        sourceBuffer.addEventListener("updateend", () => {
+                          if (mediaSource.readyState === "open" && isClosed) {
+                            setTimeout(() => mediaSource.endOfStream(), 5000)
+                            mediaSource.endOfStream()
+                          }
+                        })
+                        isFirst = false
+                      }
+                      sourceBuffer?.appendBuffer(chunk.value)
                     } else {
                       reader.cancel()
                       setResp(
@@ -84,8 +102,16 @@ export const Watch: React.FC<{
                 } catch (error) {
                   reject(error)
                 } finally {
-                  if (mediaSource.readyState === "open") {
-                    mediaSource.endOfStream()
+                  try {
+                    isClosed = true
+                    if (
+                      mediaSource.readyState === "open" &&
+                      !sourceBuffer?.updating
+                    ) {
+                      mediaSource.endOfStream()
+                    }
+                  } catch (error) {
+                    console.error(error)
                   }
                   resolve()
                 }
