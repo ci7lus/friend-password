@@ -37,7 +37,7 @@ export const Stream: React.FC<{
         <Alert
           radius="md"
           color="yellow"
-          title="Before you use it!"
+          title="Requirements"
           variant="light"
           mb="md"
         >
@@ -56,6 +56,15 @@ export const Stream: React.FC<{
         mode={MODE.Stream}
         isActionStarted={isStreamStarted}
         onSubmitHandle={({ url, key, nonce }) => {
+          if (isStreamUploadDisabled) {
+            if (
+              !confirm(
+                "Your browser may not support streaming uploads. Continue?"
+              )
+            ) {
+              return
+            }
+          }
           if (isStreamStarted) {
             abortRef.current?.abort()
             return
