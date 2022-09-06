@@ -76,6 +76,7 @@ export const Watch: React.FC<{
               )
               joinedChunk.set(firstBuffer)
               joinedChunk.set(chunk.value, firstBuffer.length)
+              firstBuffer = joinedChunk
               if (joinedChunk.length < 200) {
                 continue
               }
@@ -92,7 +93,6 @@ export const Watch: React.FC<{
                 .filter((s) => !!s)
                 .join(",")
               console.info("Found codecs:", codecs)
-              firstBuffer = joinedChunk
               if (
                 !codecs ||
                 !MediaSource.isTypeSupported(`video/webm; codecs="${codecs}"`)
