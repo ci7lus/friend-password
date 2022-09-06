@@ -48,7 +48,7 @@ export const Stream: React.FC<{
           <Title order={5} mb="xs">
             For Chrome/Chromium Edge
           </Title>
-          <Text mb="xs">Please update browser version to 105 or higher.</Text>
+          <Text>Please update browser version to 105 or higher.</Text>
         </Alert>
       )}
 
