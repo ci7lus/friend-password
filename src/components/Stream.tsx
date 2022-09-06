@@ -10,8 +10,8 @@ import {
   Title,
 } from "@mantine/core"
 import React, { useEffect, useRef, useState } from "react"
-import { MODE } from "../constants"
-import { isStreamUploadSupported, mediaStreamToReadableStream } from "../stream"
+import { DEFAULT_CODEC, MODE } from "../constants"
+import { isStreamUploadSupported } from "../stream"
 import { base64ToUint8Array } from "../utils"
 // eslint-disable-next-line import/no-unresolved
 import Worker from "../worker?worker"
@@ -91,24 +91,46 @@ export const Stream: React.FC<{
               setIsStreamStarted(true)
               setIsModeLocked(true)
 
-              const readableStream = mediaStreamToReadableStream(
-                mediaStream,
-                100
-              )
-              const transformStream = new TransformStream()
-
-              const worker = new Worker()
-
-              worker.postMessage(
-                {
-                  key: keyInArr,
-                  nonce: nonceInArr,
-                  readable: readableStream,
-                  writable: transformStream.writable,
+              // https://github.com/nwtgck/piping-server-streaming-upload-htmls/blob/a107dd1fb1bbee9991a9278b10d9eaf88b52c395/screen_share.html
+              const recorder = new MediaRecorder(mediaStream, {
+                mimeType: DEFAULT_CODEC,
+              })
+              const readableStream = new ReadableStream<ArrayBuffer>({
+                start(ctrl) {
+                  recorder.ondataavailable = async (e) => {
+                    ctrl.enqueue(new Uint8Array(await e.data.arrayBuffer()))
+                  }
+                  recorder.start(100)
                 },
-                // @ts-expect-error type broken
-                [readableStream, transformStream.writable]
-              )
+                cancel() {
+                  if (recorder.state === "recording") {
+                    recorder.stop()
+                  }
+                },
+              })
+
+              let body = readableStream
+
+              if (keyInArr && nonceInArr) {
+                const transformStream = new TransformStream<
+                  Uint8Array,
+                  Uint8Array
+                >()
+
+                const worker = new Worker()
+
+                worker.postMessage(
+                  {
+                    key: keyInArr,
+                    nonce: nonceInArr,
+                    readable: readableStream,
+                    writable: transformStream.writable,
+                  },
+                  // @ts-expect-error type broken
+                  [readableStream, transformStream.writable]
+                )
+                body = transformStream.readable
+              }
 
               const watchUrl = new URL(location.href)
               watchUrl.searchParams.set("mode", "watch")
@@ -123,28 +145,33 @@ export const Stream: React.FC<{
               abortRef.current = abort
               fetch(url, {
                 method: "PUT",
-                body: transformStream.readable,
+                body,
                 signal: abort.signal,
                 // @ts-expect-error duplex
                 duplex: "half",
               })
                 .then((res) => {
-                  mediaStream.getTracks().forEach((track) => track.stop())
                   res.text().then((text) => setResp(text))
                 })
                 .catch((e) => {
                   console.error(e)
                   setResp(e.toString())
-                  mediaStream.getTracks().forEach((track) => track.stop())
                 })
                 .finally(() => {
+                  mediaStream.getTracks().forEach((track) => track.stop())
                   setIsStreamStarted(false)
                   setIsModeLocked(false)
                 })
               mediaStream.getTracks().forEach((track) =>
-                track.addEventListener("ended", () => {
-                  abort.abort()
-                })
+                track.addEventListener(
+                  "ended",
+                  () => {
+                    abort.abort()
+                  },
+                  {
+                    once: true,
+                  }
+                )
               )
             })
             .catch((e) => {

@@ -2,17 +2,13 @@ import Chacha20 from "chacha20-universal"
 
 const encodeFunction =
   (chacha: Chacha20 | null) =>
-  (
-    data: ArrayBuffer,
-    controller: TransformStreamDefaultController<unknown>
-  ) => {
-    const dataInUint = new Uint8Array(data)
+  (data: Uint8Array, controller: TransformStreamDefaultController<unknown>) => {
     if (!chacha) {
-      controller.enqueue(dataInUint)
+      controller.enqueue(data)
       return
     }
     const result = new Uint8Array(data.byteLength)
-    chacha.update(result, dataInUint)
+    chacha.update(result, data)
     controller.enqueue(result)
   }
 
