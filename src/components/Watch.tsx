@@ -85,6 +85,7 @@ export const Watch: React.FC<{
               if (!track) {
                 // 200bytesあってTrackないのはデコード失敗してそう
                 setResp("EMBL not found(Wrong key or nonce?)")
+                reader.cancel()
                 return
               }
               codecs = track.TrackEntry.map(
@@ -100,6 +101,7 @@ export const Watch: React.FC<{
                 setResp(
                   `Codec is not supported(video/webm; codecs="${codecs}")`
                 )
+                reader.cancel()
                 return
               }
             }
