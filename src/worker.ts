@@ -29,7 +29,10 @@ worker.onmessage = (event) => {
   const transformStream = new TransformStream({
     transform: encodeFunction(key && nonce ? new Chacha20(nonce, key) : null),
   })
-  readable.pipeThrough(transformStream).pipeTo(writable)
+  readable
+    .pipeThrough(transformStream)
+    .pipeTo(writable)
+    .finally(() => self.close())
 }
 
 export {}

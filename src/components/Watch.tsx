@@ -6,8 +6,6 @@ import { base64ToUint8Array } from "../utils"
 import Worker from "../worker?worker"
 import { Form } from "./Form"
 
-const worker = new Worker()
-
 export const Watch: React.FC<{
   setIsModeLocked: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ setIsModeLocked }) => {
@@ -50,6 +48,8 @@ export const Watch: React.FC<{
             }
 
             const decodeStream = new TransformStream()
+
+            const worker = new Worker()
 
             worker.postMessage(
               {
