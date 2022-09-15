@@ -80,7 +80,7 @@ export const Watch: React.FC<{
               if (joinedChunk.length < 200) {
                 continue
               }
-              const metadata = new EbmlToJson(chunk.value)
+              const metadata = new EbmlToJson(joinedChunk)
               const track = metadata.Segment?.Tracks?.slice(0).shift()
               if (!track) {
                 // 200bytesあってTrackないのはデコード失敗してそう
