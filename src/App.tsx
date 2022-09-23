@@ -43,8 +43,15 @@ function App() {
 
   return (
     <Container>
-      <Title order={1} mt="xl" mb="xs">
+      <Title order={1} mt="xl">
         friend-password
+      </Title>
+      <Title order={2} size="lg" mb="lg">
+        Share screen with{" "}
+        <Anchor href="https://github.com/nwtgck/piping-server" target="_blank">
+          nwtgck/piping-server
+        </Anchor>{" "}
+        + ReadableStream + fetch.
       </Title>
 
       <Center mb="md">
